@@ -9,6 +9,7 @@ class GildedRose
   def update_quality()
     @items.each do |item|
       update_common_item(item) if !SPECIAL_ITEMS.include?(item.name)
+      update_aged_brie(item) if item.name == SPECIAL_ITEMS[1]
         
       
 
@@ -22,6 +23,12 @@ class GildedRose
     elsif item.sell_in <= 0 && item.quality > 0
       item.quality -= 2
     end
+    item.sell_in -= 1
+  end
+
+  def update_aged_brie(item)
+    item.quality += 1 if item.sell_in <= 0 && item.quality < 50
+    item.quality += 1 if item.quality < 50
     item.sell_in -= 1
   end
 
