@@ -19,7 +19,7 @@ class GildedRose
 
   private
   def update_common_item(item)
-    if item.sell_in > 0 && item.quality > MIN_QUALITY 
+    if has_not_expired?(item) && item.quality > MIN_QUALITY 
       item.quality -= 1
     elsif has_expired?(item) && item.quality > MIN_QUALITY
       item.quality -= 2
@@ -35,8 +35,8 @@ class GildedRose
 
   def update_backstage_passes(item)
     item.quality = MIN_QUALITY if has_expired?(item)
-    item.quality += 1 if item.sell_in > 10 || (item.sell_in <= 5 && item.sell_in > 0)
-    item.quality += 2 if item.sell_in <= 10 && item.sell_in > 0
+    item.quality += 1 if item.sell_in > 10 || (item.sell_in <= 5 && has_not_expired?(item))
+    item.quality += 2 if item.sell_in <= 10 && has_not_expired?(item)
     item.sell_in -= 1
   end
 
@@ -48,6 +48,10 @@ class GildedRose
 
   def has_expired?(item)
     item.sell_in <= 0
+  end
+
+  def has_not_expired?(item)
+    item.sell_in > 0
   end
   
 end
