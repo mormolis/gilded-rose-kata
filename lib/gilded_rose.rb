@@ -1,6 +1,6 @@
 class GildedRose
 
-  SPECIAL_ITEMS = ["Sulfuras, Hand of Ragnaros","Aged Brie","Backstage passes to a TAFKAL80ETC concert"]
+  SPECIAL_ITEMS = ["Sulfuras, Hand of Ragnaros","Aged Brie","Backstage passes to a TAFKAL80ETC concert", "Conjured"]
 
   def initialize(items)
     @items = items
@@ -11,6 +11,7 @@ class GildedRose
       update_common_item(item) if !SPECIAL_ITEMS.include?(item.name)
       update_aged_brie(item) if item.name == SPECIAL_ITEMS[1]
       update_backstage_passes(item) if item.name == SPECIAL_ITEMS[2]
+      update_conjured(item) if item.name == SPECIAL_ITEMS[3]
     end  
   end
 
@@ -33,9 +34,15 @@ class GildedRose
     item.quality = 0 if item.sell_in <= 0
     item.quality += 1 if item.sell_in > 10 || (item.sell_in <= 5 && item.sell_in > 0)
     item.quality += 2 if item.sell_in <= 10 && item.sell_in > 0
-    # item.quality += 1 if item.sell_in <= 5 && item.sell_in > 0
     item.sell_in -= 1
   end
+
+  def update_conjured(item)
+    update_common_item(item)
+    item.sell_in += 1
+    update_common_item(item)
+  end
+  
 end
 
 class Item

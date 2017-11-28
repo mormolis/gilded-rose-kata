@@ -124,6 +124,40 @@ describe GildedRose do
       end
 
     end
+    context "Conjured items" do
+      it "quality should not go bellow 0" do
+        items = [Item.new("Conjured", 5, 0)]
+        GildedRose.new(items).update_quality()
+        expect(items[0].quality).to eq 0
+      end
+
+      it "quality degrade twice as fast as a common item" do
+        items = [Item.new("Conjured", 5, 10)]
+        GildedRose.new(items).update_quality()
+        expect(items[0].quality).to eq 8
+      end
+
+      it "quality degrade twice as fast as a common item but cannot be negative" do
+        items = [Item.new("Conjured", 5, 1)]
+        GildedRose.new(items).update_quality()
+        expect(items[0].quality).to eq 0
+      end
+
+      it "quality degrade twice as fast as a common item for sell_in <= 0" do
+        items = [Item.new("Conjured", 0, 10)]
+        GildedRose.new(items).update_quality()
+        expect(items[0].quality).to eq 6
+      end
+
+      it "quality degrade twice as fast as a common item for sell_in <= 0" do
+        items = [Item.new("Conjured", 0, 2)]
+        GildedRose.new(items).update_quality()
+        expect(items[0].quality).to eq 0
+      end
+
+
+
+    end
 
   end
 end
