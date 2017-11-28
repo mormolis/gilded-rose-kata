@@ -20,24 +20,24 @@ class GildedRose
   private
   def update_common_item(item)
     if has_not_expired?(item) && item.quality > MIN_QUALITY 
-      item.quality -= 1
+      decrease_quality_by(item, 1)
     elsif has_expired?(item) && item.quality > MIN_QUALITY
-      item.quality -= 2
+      decrease_quality_by(item, 2)
     end
-    item.sell_in -= 1
+    a_day_passes(item)
   end
 
   def update_aged_brie(item)
-    item.quality += 1 if has_expired?(item) && item.quality < MAX_QUALITY
-    item.quality += 1 if item.quality < MAX_QUALITY
-    item.sell_in -= 1
+    increase_quality_by(item, 1) if has_expired?(item) && item.quality < MAX_QUALITY
+    increase_quality_by(item, 1) if item.quality < MAX_QUALITY
+    a_day_passes(item)
   end
 
   def update_backstage_passes(item)
     item.quality = MIN_QUALITY if has_expired?(item)
-    item.quality += 1 if item.sell_in > 10 || (item.sell_in <= 5 && has_not_expired?(item))
-    item.quality += 2 if item.sell_in <= 10 && has_not_expired?(item)
-    item.sell_in -= 1
+    increase_quality_by(item, 1) if more_than_ten_days_or_five_or_less_and_not_expired(item)
+    increase_quality_by(item, 2) if item.sell_in <= 10 && has_not_expired?(item)
+    a_day_passes(item)
   end
 
   def update_conjured(item)
@@ -52,6 +52,22 @@ class GildedRose
 
   def has_not_expired?(item)
     item.sell_in > 0
+  end
+
+  def more_than_ten_days_or_five_or_less_and_not_expired(item)
+    item.sell_in > 10 || (item.sell_in <= 5 && has_not_expired?(item))
+  end
+
+  def increase_quality_by(item, quality)
+    item.quality += quality
+  end
+
+  def decrease_quality_by(item, quality)
+    item.quality -= quality
+  end
+
+  def a_day_passes(item)
+    item.sell_in -= 1
   end
   
 end
