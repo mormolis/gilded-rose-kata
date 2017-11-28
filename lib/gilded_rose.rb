@@ -10,11 +10,8 @@ class GildedRose
     @items.each do |item|
       update_common_item(item) if !SPECIAL_ITEMS.include?(item.name)
       update_aged_brie(item) if item.name == SPECIAL_ITEMS[1]
-        
-      
-
-    end
-      
+      update_backstage_passes(item) if item.name == SPECIAL_ITEMS[2]
+    end  
   end
 
   def update_common_item(item)
@@ -32,8 +29,13 @@ class GildedRose
     item.sell_in -= 1
   end
 
-
-
+  def update_backstage_passes(item)
+    item.quality = 0 if item.sell_in <= 0
+    item.quality += 1 if item.sell_in > 10 || (item.sell_in <= 5 && item.sell_in > 0)
+    item.quality += 2 if item.sell_in <= 10 && item.sell_in > 0
+    # item.quality += 1 if item.sell_in <= 5 && item.sell_in > 0
+    item.sell_in -= 1
+  end
 end
 
 class Item
