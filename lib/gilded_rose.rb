@@ -1,6 +1,8 @@
 class GildedRose
 
   SPECIAL_ITEMS = ["Sulfuras, Hand of Ragnaros","Aged Brie","Backstage passes to a TAFKAL80ETC concert", "Conjured"]
+  MAX_QUALITY = 50
+  MIN_QUALITY = 0
 
   def initialize(items)
     @items = items
@@ -15,23 +17,24 @@ class GildedRose
     end  
   end
 
+  private
   def update_common_item(item)
-    if item.sell_in > 0 && item.quality > 0 
+    if item.sell_in > 0 && item.quality > MIN_QUALITY 
       item.quality -= 1
-    elsif item.sell_in <= 0 && item.quality > 0
+    elsif has_expired?(item) && item.quality > MIN_QUALITY
       item.quality -= 2
     end
     item.sell_in -= 1
   end
 
   def update_aged_brie(item)
-    item.quality += 1 if item.sell_in <= 0 && item.quality < 50
-    item.quality += 1 if item.quality < 50
+    item.quality += 1 if has_expired?(item) && item.quality < MAX_QUALITY
+    item.quality += 1 if item.quality < MAX_QUALITY
     item.sell_in -= 1
   end
 
   def update_backstage_passes(item)
-    item.quality = 0 if item.sell_in <= 0
+    item.quality = MIN_QUALITY if has_expired?(item)
     item.quality += 1 if item.sell_in > 10 || (item.sell_in <= 5 && item.sell_in > 0)
     item.quality += 2 if item.sell_in <= 10 && item.sell_in > 0
     item.sell_in -= 1
@@ -41,6 +44,10 @@ class GildedRose
     update_common_item(item)
     item.sell_in += 1
     update_common_item(item)
+  end
+
+  def has_expired?(item)
+    item.sell_in <= 0
   end
   
 end
