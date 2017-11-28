@@ -3,6 +3,8 @@ class GildedRose
   SPECIAL_ITEMS = ["Sulfuras, Hand of Ragnaros","Aged Brie","Backstage passes to a TAFKAL80ETC concert", "Conjured"]
   MAX_QUALITY = 50
   MIN_QUALITY = 0
+  BACKSTAGE_PASSES_VALUED_DAYS_MAX = 10
+  BACKSTAGE_PASSES_VALUED_DAYS_MIN = 5
 
   def initialize(items)
     @items = items
@@ -36,7 +38,7 @@ class GildedRose
   def update_backstage_passes(item)
     item.quality = MIN_QUALITY if has_expired?(item)
     increase_quality_by(item, 1) if more_than_ten_days_or_five_or_less_and_not_expired(item)
-    increase_quality_by(item, 2) if item.sell_in <= 10 && has_not_expired?(item)
+    increase_quality_by(item, 2) if item.sell_in <= BACKSTAGE_PASSES_VALUED_DAYS_MAX && has_not_expired?(item)
     a_day_passes(item)
   end
 
@@ -55,7 +57,7 @@ class GildedRose
   end
 
   def more_than_ten_days_or_five_or_less_and_not_expired(item)
-    item.sell_in > 10 || (item.sell_in <= 5 && has_not_expired?(item))
+    item.sell_in > BACKSTAGE_PASSES_VALUED_DAYS_MAX || (item.sell_in <= BACKSTAGE_PASSES_VALUED_DAYS_MIN && has_not_expired?(item))
   end
 
   def increase_quality_by(item, quality)
